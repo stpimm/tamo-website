@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* ---------------- Stacking / globals ---------------- */
+#root {
+  position: relative;
+  z-index: 1;
+}
+.backdrop-root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Prevent any horizontal scroll globally */
+html, body { max-width: 100%; overflow-x: clip; }
+html { scroll-behavior: smooth; }
+
+/* ---------------- Theme tokens (Tailwind v4 @theme) ---------------- */
+@theme {
+  --color-brand-600: #009b90; /* TAMO green */
+  --color-brand-700: #007e74; /* darker hover */
+  --color-ink-900:   oklch(22% 0.02 255);
+  --color-ink-700:   oklch(35% 0.02 255);
+}
+body { color: var(--color-ink-900); background: white; }
+.section-title { @apply text-3xl md:text-5xl font-semibold tracking-tight; }
+
+/* ---------------- Seamless marquee ---------------- */
+/* Distance and duration are set via CSS vars from JS for a pixel-perfect loop */
+@keyframes marquee-x {
+  from { transform: translate3d(0,0,0); }
+  to   { transform: translate3d(calc(-1 * var(--loop, 0px)), 0, 0); }
+}
+
+.marquee-row {
+  position: relative;
+  overflow-x: hidden;   /* clip left/right only */
+  overflow-y: visible;  /* allow tall logos if needed */
+  --logo-gap: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.marquee-track {
+  animation-name: marquee-x;
+  animation-duration: var(--duration, 48s); /* slow default; JS sets exact value */
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.marquee-track.marquee-reverse { animation-direction: reverse; }
+.marquee-row:hover .marquee-track { animation-play-state: paused; }
+
+/* Edge fade so items don’t pop in/out */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+}
+
+/* Logo sizing: equal height, auto width, consistent slot */
+.logo-slot { width: clamp(130px, 12vw, 200px); overflow: visible; }
+.logo-img  { display: block; height: 2rem; }          /* ~ h-8 */
+@media (min-width: 768px) { .logo-img { height: 2.5rem; } }  /* ~ md:h-10 */
+
+/* (Legacy helper kept just in case something else uses it) */
+@keyframes marquee { from {transform:translateX(0)} to {transform:translateX(-50%)} }
+.animate-marquee { animation: marquee 25s linear infinite; }
+
+/* ---------------- Background patterns ---------------- */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+.bg-grid-dark {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+.bg-dots {
+  background-image: radial-gradient(rgba(0,0,0,0.08) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Soften pattern edges (subtle horizontal fade) */
+.pattern-fade {
+  -webkit-mask-image: radial-gradient(120% 100% at 50% 30%, black 60%, transparent 100%);
+          mask-image: radial-gradient(120% 100% at 50% 30%, black 60%, transparent 100%);
+}
+
+/* Soft vignette used by Backdrop */
+.bg-radial-fade {
+  background: radial-gradient(1200px 800px at 50% 25%, rgba(255,255,255,0.65), transparent 60%);
+}
+
+/* Grid fade at top & bottom for seamless section transitions */
+.grid-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+}
+
+/* Generic vertical fade utility (for orbs/grid) */
+.fade-vertical {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+}
+
+/* ---------------- Footer curve (non-overflowing, masked) ---------------- */
+.footer-curve {
+  position: absolute;
+  left: 0; right: 0;
+  top: -120px;            /* how high the curve begins above footer */
+  height: 180px;          /* curve height */
+  background: white;
+  -webkit-mask-image: radial-gradient(120% 200px at 50% 100%, transparent 0 58%, black 59% 100%);
+          mask-image: radial-gradient(120% 200px at 50% 100%, transparent 0 58%, black 59% 100%);
+  pointer-events: none;
+}
+
+/* ---------------- TAMO brand overrides (no tailwind.config needed) ---------------- */
+:root { --tamo-green: #009b90; }
+.bg-blue-500 { background-color: var(--tamo-green) !important; }
+.hover\:bg-blue-600:hover { background-color: color-mix(in srgb, var(--tamo-green) 90%, black) !important; }
+button.btn-primary, .btn-primary {
+  background-color: var(--tamo-green) !important;
+  color: #fff !important;
+  transition: background-color .2s ease;
+}
+button.btn-primary:hover, .btn-primary:hover {
+  background-color: color-mix(in srgb, var(--tamo-green) 90%, black) !important;
+}
+a.text-accent { color: var(--tamo-green) !important; }
+a.text-accent:hover { color: color-mix(in srgb, var(--tamo-green) 90%, black) !important; }
