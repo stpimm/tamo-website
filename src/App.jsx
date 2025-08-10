@@ -1,3 +1,4 @@
+// src/App.jsx
 import Navbar from "./components/Navbar";
 import Section from "./components/layout/Section";
 
@@ -9,42 +10,49 @@ import Partners from "./components/Partners";  // “Technology Partner”
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
+import Preloader from "./components/Preloader"; // <-- NEW
+
 export default function App() {
   return (
-    <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
-      <Navbar />
+    <>
+      {/* The loader is a fixed overlay; it won’t affect your layout or backgrounds */}
+      <Preloader />
 
-      {/* Hero */}
-      <Section id="hero" withGrid={false}>
-        <Hero />
-      </Section>
+      <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
+        <Navbar />
 
-      {/* Our Story */}
-      <Section id="story" withGrid>
-        <About />
-      </Section>
+        {/* Hero (no grid) */}
+        <Section id="hero" withGrid={false}>
+          <Hero />
+        </Section>
 
-      {/* Clients */}
-      <Section id="clients" withGrid={false}>
-        <Clients />
-      </Section>
+        {/* Our Story (grid) */}
+        <Section id="story" withGrid>
+          <About />
+        </Section>
 
-      {/* What We Do */}
-      <Section id="services" withGrid>
-        <Services />
-      </Section>
+        {/* Clients (no grid) */}
+        <Section id="clients" withGrid={false}>
+          <Clients />
+        </Section>
 
-      {/* Technology Partner */}
-      <Section id="partners" withGrid={false}>
-        <Partners />
-      </Section>
+        {/* What We Do (grid) */}
+        <Section id="services" withGrid>
+          <Services />
+        </Section>
 
-      {/* Contact */}
-      <Section id="contact" withGrid>
-        <Contact />
-      </Section>
+        {/* Technology Partner (no grid) */}
+        <Section id="partners" withGrid={false}>
+          <Partners />
+        </Section>
 
-      <Footer />
-    </div>
+        {/* Contact (grid) */}
+        <Section id="contact" withGrid>
+          <Contact />
+        </Section>
+
+        <Footer />
+      </div>
+    </>
   );
 }
