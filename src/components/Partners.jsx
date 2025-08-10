@@ -1,15 +1,10 @@
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
-const logo = (p) => new URL(p, import.meta.url).href;
+// public/partners/... + base-aware URL
+const partnerUrl = (p) => `${import.meta.env.BASE_URL}partners/${p}`;
 
-/** Seamless marquee row with consistent spacing (gap) including the seam */
-function MarqueeRow({
-  paths,
-  reverse = false,
-  speed = 22,
-  gap = "clamp(1.25rem, 3vw, 2.25rem)",
-}) {
+function MarqueeRow({ paths, reverse = false, speed = 22, gap = "clamp(1.25rem, 3vw, 2.25rem)" }) {
   const trackRef = useRef(null);
   const stripRef = useRef(null);
 
@@ -17,14 +12,12 @@ function MarqueeRow({
     if (!stripRef.current || !trackRef.current) return;
     const el = stripRef.current;
     const track = trackRef.current;
-
     const update = () => {
       const w = Math.ceil(el.getBoundingClientRect().width);
       track.style.setProperty("--loop", `${w}px`);
       const seconds = Math.max(36, w / speed);
       track.style.setProperty("--duration", `${seconds}s`);
     };
-
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
@@ -32,44 +25,23 @@ function MarqueeRow({
   }, [paths, speed]);
 
   return (
-    <div
-      className="marquee-row marquee-mask py-2 md:py-2.5"
-      style={{ ["--logo-gap"]: gap }}
-    >
-      <div
-        ref={trackRef}
-        className={`marquee-track ${reverse ? "marquee-reverse" : ""} flex min-w-max`}
-        style={{ gap: 0 }}
-      >
+    <div className="marquee-row marquee-mask py-2 md:py-2.5" style={{ ["--logo-gap"]: gap }}>
+      <div ref={trackRef} className={`marquee-track ${reverse ? "marquee-reverse" : ""} flex min-w-max`} style={{ gap: 0 }}>
         <div ref={stripRef} className="flex min-w-max" style={{ gap: "var(--logo-gap)" }}>
           {paths.map((p, i) => {
             const isLast = i === paths.length - 1;
             return (
-              <div
-                key={`a-${i}`}
-                className="logo-slot flex items-center justify-center px-3 md:px-4"
-                style={isLast ? { marginRight: "var(--logo-gap)" } : undefined}
-              >
-                <img
-                  src={logo(`../assets/partners/${p}`)}
-                  alt={p}
-                  className="logo-img w-auto object-contain"
-                  loading="lazy"
-                />
+              <div key={`a-${i}`} className="logo-slot flex items-center justify-center px-3 md:px-4"
+                   style={isLast ? { marginRight: "var(--logo-gap)" } : undefined}>
+                <img src={partnerUrl(p)} alt={p} className="logo-img w-auto object-contain" loading="lazy" />
               </div>
             );
           })}
         </div>
-
         <div className="flex min-w-max" style={{ gap: "var(--logo-gap)" }} aria-hidden="true">
           {paths.map((p, i) => (
             <div key={`b-${i}`} className="logo-slot flex items-center justify-center px-3 md:px-4">
-              <img
-                src={logo(`../assets/partners/${p}`)}
-                alt=""
-                className="logo-img w-auto object-contain"
-                loading="lazy"
-              />
+              <img src={partnerUrl(p)} alt="" className="logo-img w-auto object-contain" loading="lazy" />
             </div>
           ))}
         </div>
@@ -136,11 +108,7 @@ const groups = [
 
 const container = {
   hidden: { opacity: 0, y: 24 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut", staggerChildren: 0.06 },
-  },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut", staggerChildren: 0.06 } },
 };
 const item = {
   hidden: { opacity: 0, y: 12 },
@@ -151,39 +119,22 @@ export default function Partners() {
   return (
     <div className="relative">
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 md:py-14 w-full">
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          {/* Header — tighter spacing between title and subheadline */}
+        <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }}>
           <div className="space-y-2 md:space-y-3 mb-6 md:mb-8">
             <motion.h2 variants={item} className="section-title leading-tight tracking-tight">
               Technology Partners We Build With
             </motion.h2>
-            <motion.p
-              variants={item}
-              className="max-w-4xl text-ink-700 text-lg md:text-xl leading-relaxed"
-            >
+            <motion.p variants={item} className="max-w-4xl text-ink-700 text-lg md:text-xl leading-relaxed">
               We design, supply, and support solutions powered by these leading vendors—choosing
               the right products and licensing to fit your goals, budget, and scale.
             </motion.p>
           </div>
 
-          {/* Categories */}
           <div className="space-y-7 md:space-y-8">
             {groups.map((g, idx) => (
               <motion.div key={g.label} variants={item} className="space-y-2">
-                <div className="text-xs uppercase tracking-wide text-ink-700 leading-none">
-                  {g.label}
-                </div>
-                <MarqueeRow
-                  paths={g.items}
-                  reverse={idx % 2 === 1}
-                  speed={22}
-                  gap="clamp(1.25rem, 3vw, 2.25rem)"
-                />
+                <div className="text-xs uppercase tracking-wide text-ink-700 leading-none">{g.label}</div>
+                <MarqueeRow paths={g.items} reverse={idx % 2 === 1} speed={22} gap="clamp(1.25rem, 3vw, 2.25rem)" />
               </motion.div>
             ))}
           </div>
