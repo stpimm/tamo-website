@@ -1,14 +1,16 @@
 import { motion } from "framer-motion";
 
 const Stat = ({ value, label }) => (
-  <div className="w-[104px] sm:w-[112px] md:w-[118px] lg:w-[200px]">
+  <div className="w-full">
     <div className="rounded-2xl bg-white ring-1 ring-black/10 shadow-sm">
-      {/* fixed height + flex centering so text never drifts */}
-      <div className="flex flex-col items-center justify-center h-[86px] sm:h-[92px] md:h-[100px] lg:h-[140px] px-3 md:px-4">
+      {/* fixed height + real centering; width is fluid */}
+      <div className="flex flex-col items-center justify-center
+                      h-[92px] sm:h-[100px] md:h-[112px] lg:h-[140px] px-3 md:px-4">
         <div className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-semibold leading-none text-ink-900">
           {value}
         </div>
-        <div className="mt-1 md:mt-1.5 text-[9px] sm:text-[10px] md:text-[10px] lg:text-xs uppercase tracking-[0.14em] text-ink-700 whitespace-nowrap">
+        <div className="mt-1 md:mt-1.5 text-[9px] sm:text-[10px] md:text-[10px] lg:text-xs
+                        uppercase tracking-[0.14em] text-ink-700 whitespace-nowrap">
           {label}
         </div>
       </div>
@@ -19,10 +21,9 @@ const Stat = ({ value, label }) => (
 export default function About() {
   return (
     <div className="relative z-10 mx-auto max-w-7xl px-6 py-10 md:py-16 w-full">
-      {/* More breathing room between columns on desktop */}
       <div className="grid grid-cols-1 md:grid-cols-2 items-center md:gap-20 lg:gap-24">
-        {/* Left: copy (constrain width + add right padding) */}
-        <div className="md:max-w-3xl md:pr-4 lg:pr-8">
+        {/* Left: copy */}
+        <div className="md:max-w-3xl md:pr-6 lg:pr-10">
           <motion.h2
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -59,15 +60,15 @@ export default function About() {
           </motion.p>
         </div>
 
-        {/* Right: KPI row — add left padding so it doesn’t feel tight */}
+        {/* Right: 3 cards in a fluid 3-col grid; no overlap */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.35, delay: 0.1 }}
-          className="md:flex md:justify-end md:pl-6 lg:pl-10"
+          className="md:pl-8 lg:pl-12"
         >
-          <div className="grid grid-cols-3 gap-3 md:gap-4 lg:gap-5 place-items-center">
+          <div className="grid grid-cols-3 gap-3 md:gap-5">
             <Stat value="2017" label="EST." />
             <Stat value="40+" label="PROJECTS" />
             <Stat value="10+" label="INDUSTRIES" />

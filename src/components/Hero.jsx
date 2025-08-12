@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react"
 
 export default function Hero() {
   // Smooth-scroll helper (works nicely inside the snap container)
